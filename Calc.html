@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Calculator</title>
+    </head>
+    <body>
+        <script>
+
+        let input = prompt('Calc')
+        let S = 0 // количество мат операторов в строке
+        let W = 0 // количество некорректных символов во входной строке
+        let Z // результат, 
+        let N // позиция в строке, где находится мат оператор (+,-,*,/)
+        let D = '' //переменная, которая описывает мат операцию
+        let X1 = ''
+        let X2 = ''
+        let C = ['1','2','3','4','5','6','7','8','9','0','I','V','X','L','C','+','-','*','/']
+        let roman = ['I','V','X','L','C']
+        let arabic = ['1','2','3','4','5','6','7','8','9','0']
+        let firstIsRoman = true
+        let secondIsRoman = true
+        let firstIsArabic = true
+        let secondIsArabic = true
+
+        for (let i = 0; i < input.length; i++) { //проверка - сколько 
+        if (input[i] == '+') {S = S + 1}
+        if (input[i] == '-') {S = S + 1}
+        if (input[i] == '*') {S = S + 1}
+        if (input[i] == '/') {S = S + 1}
+        }
+        
+        if (S == 1) {
+            for (let j = 0; j < input.length; j++) {
+                for (let k = 0; k < C.length; k++) {
+                    if (input[j] != C[k]) {
+                    W = W + 1
+                    }
+                }
+            }
+
+            if ((W - input.length*(C.length - 1)) == 0){
+
+                for (i = 0; i < input.length; i++) { //определение типа операции
+                    if (input[i] == '+') {
+                        D = 'Сложение';
+                        N = i
+                    } else if (input[i] == '-') {
+                        D = 'Вычитание';
+                        N = i
+                    } else if (input[i] == '*') {
+                        D = 'Умножение';
+                        N = i
+                    } else if (input[i] == '/') {
+                        D = 'Деление';
+                        N = i
+                    }
+                }
+
+                for (i = 0; i < N; i++) { // определение 1го операнда
+                    X1 = X1 + input[i]
+                }
+
+                for (i = N + 1; i < input.length; i++) { // определение 2го операнда
+                    X2 = X2 + input[i]
+                }
+
+                W = 0
+                for (i = 0; i < X1.length; i++) { // проверка, является ли первый операнд римским числом
+                    for (j = 0; j < roman.length; j++) {
+                        if (X1[i] != roman[j]) {
+                            W = W + 1
+                        }                
+                    }
+                }  
+                if ((W - X1.length*(roman.length - 1)) == 0) {
+                    firstIsRoman = true 
+                    firstIsArabic = false   
+                } else {
+                    firstIsRoman = false 
+                    W = 0
+                    for (i = 0; i < X1.length; i++) { // проверка, является ли первый операнд арабским числом
+                        for (j = 0; j < arabic.length; j++) {
+                            if (X1[i] != arabic[j]) {
+                                W = W + 1
+                            }                
+                        }
+                    }  
+                    if ((W - X1.length*(arabic.length - 1)) == 0) {
+                        firstIsArabic = true
+                    } else firstIsArabic = false
+
+                }
+
+                W = 0
+                for (i = 0; i < X2.length; i++) { // проверка, является ли второй операнд римским числом
+                    for (j = 0; j < roman.length; j++) {
+                        if (X2[i] != roman[j]) {
+                            W = W + 1
+                        }                
+                    }
+                }  
+                if ((W - X2.length*(roman.length - 1)) == 0) {
+                    secondIsRoman = true
+                    secondIsArabic = false    
+                } else {
+                    secondIsRoman = false
+                    W = 0
+                    for (i = 0; i < X2.length; i++) { // проверка, является ли второй операнд арабским числом
+                        for (j = 0; j < arabic.length; j++) {
+                            if (X2[i] != arabic[j]) {
+                                W = W + 1
+                            }                
+                        }
+                    }  
+                    if ((W - X2.length*(arabic.length - 1)) == 0) {
+                        secondIsArabic = true
+                    } else secondIsArabic = false
+                }
+
+                if ((firstIsArabic) && (secondIsArabic)) {// если оба - арабские числа, то считаем
+                    let Y1 = Number(X1)
+                    let Y2 = Number(X2)
+
+                    switch (D) { //производим математическую операцию
+                    case 'Сложение':
+                        Z = Y1 + Y2
+                        break
+                    case 'Вычитание':
+                        Z = Y1 - Y2
+                        break
+                    case 'Умножение':
+                        Z = Y1 * Y2
+                        break
+                    case 'Деление':
+                        Z = Math.floor(Y1 / Y2)
+                        break
+                    }
+                
+                    alert(Z) //выводим результат
+                } else if ((firstIsRoman) && (secondIsRoman)) { //если оба операнда - римские цисла
+                    function romanToArabic(romanNumber) { //функция, которая римское число преобразует в арабское
+                        let N = 0
+                        for (let i = (romanNumber.length - 1); i >= 0; i--) {
+                            
+                            if (romanNumber[i] == 'I') {   
+                                if ((romanNumber.length - 1) == i) {
+                                        N = N + 1
+                                } else if (romanNumber[i+1] == 'I') {
+                                    N = N + 1
+                                } else N = N - 1
+                            } else if (romanNumber[i] == 'V') {
+                                N = N + 5
+                            } else if (romanNumber[i] == 'X') {
+                                if ((romanNumber.length - 1) == i) {
+                                        N = N + 10
+                                    } else if (romanNumber[i+1] == 'X') {
+                                        N = N + 10
+                                    } else if (romanNumber[i+1] == 'I') {
+                                        N = N + 10
+                                    } else N = N - 10
+                            } else if (romanNumber[i] == 'L') {
+                                N = N + 50
+                            } else if (romanNumber[i] == 'C') {
+                                N = N + 100
+                            }                      
+                        }
+                        return(N)
+                    }
+                    let R1 = romanToArabic(X1) // преобразуем первый операнд
+                    let R2 = romanToArabic(X2) // преобразуем второй операнд
+
+                    switch (D) { //производим математическую операцию
+                    case 'Сложение':
+                        Z = R1 + R2
+                        break
+                    case 'Вычитание':
+                        Z = R1 - R2
+                        break
+                    case 'Умножение':
+                        Z = R1 * R2
+                        break
+                    case 'Деление':
+                        Z = Math.floor(R1 / R2)
+                        break
+                    }
+                                                           
+                    function arabicToRoman(arabicNumber) { // функция, которая преобразует арабское число обратно в римское
+                        let R = ''
+                        if (arabicNumber >= 10) {
+                            switch (Math.floor(arabicNumber/10)) {
+                                case 1:
+                                    R = R + 'X'
+                                    break
+                                case 2:
+                                    R = R + 'XX'
+                                    break
+                                case 3:
+                                    R = R + 'XXX'
+                                    break
+                                case 4:
+                                    R = R + 'XL'
+                                    break
+                                case 5: 
+                                    R = R + 'L'
+                                    break
+                                case 6:
+                                    R = R + 'LX'
+                                    break
+                                case 7:
+                                    R = R + 'LXX'
+                                    break
+                                case 8:
+                                    R = R + 'LXXX'
+                                    break
+                                case 9:
+                                    R = R + 'XC'
+                                    break
+                                case 10:
+                                    R = R + 'C'
+                                    break
+                            }
+                        }
+                        switch (arabicNumber % 10) {
+                            case 1:
+                                R = R + 'I'
+                                break
+                            case 2:
+                                R = R + 'II'
+                                break
+                            case 3:
+                                R = R + 'III'
+                                break
+                            case 4:
+                                R = R + 'IV'
+                                break
+                            case 5:
+                                R = R + 'V'
+                                break
+                            case 6:
+                                R = R + 'VI'
+                                break
+                            case 7:
+                                R = R + 'VII'
+                                break
+                            case 8:
+                                R = R + 'VIII'
+                                break
+                            case 9:
+                                R = R + 'IX'
+                                break
+                        }
+                        return(R) //выводим результат  
+                        }
+                    
+                    if (Z > 0) alert (arabicToRoman(Z))
+                    else alert ('результат равен или меньше 0, как вы хотите, чтобы вам это показали римскими числами?')
+                    
+                      
+                } else alert('Оба числа должны быть либо римскми, либо арабскими')
+
+            } else alert ('Некорректные входные данные, обнаружены знаки, не являющиеся цифрами')
+        
+        } else if (S == 0) {
+            alert('Некорректные входные данные, не обнаружен математический оператор')
+        
+        } else alert ('Некорректные входные данные, больше одного математического оператора')
+
+        </script>
+    </body>
+</html>
